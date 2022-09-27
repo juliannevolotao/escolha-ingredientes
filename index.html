@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, inaitial-scale=1.0" />
+    <title>Subway</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", "sans-serif";
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #ffcb08;
+        overflow: hidden;
+      }
+      .flex {
+        display: flex;
+      }
+      .a-center {
+        align-items: center;
+      }
+      .j-center {
+        justify-content: center;
+      }
+      .j-spc-btw {
+        justify-content: space-between;
+      }
+      .j-spc-arnd {
+        justify-content: space-around;
+      }
+      .j-spc-evly {
+        justify-content: space-evenly;
+      }
+      .d-column {
+        flex-direction: column;
+      }
+      .flex-center {
+        align-items: center;
+        justify-content: center;
+      }
+      .p-relative {
+        position: relative;
+      }
+      .p-absolute {
+        position: absolute;
+      }
+
+      .app-container {
+        max-width: 1023px;
+        min-height: 100vh;
+        height: fit-content;
+        width: 100%;
+        background-color: #f2f2f2;
+        /* border-radius: 10px; */
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .step-0 {
+        height: 100vh;
+        width: 100%;
+        position: relative;
+
+        opacity: 1;
+        visibility: visible;
+        transition: all 0.3s;
+      }
+      .step-0 img {
+        width: 240px;
+      }
+      .main-btn {
+        width: 180px;
+        height: 40px;
+        border-radius: 4px;
+        background-color: #119c4a;
+        border: none;
+        color: white;
+        font-weight: bold;
+        position: absolute;
+        bottom: 5%;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        opacity: 1;
+        visibility: visible;
+        transition: all 0.3s;
+      }
+
+      .main-input {
+        width: 100%;
+        max-width: 280px;
+        height: 50px;
+        border-radius: 5px;
+        border: 1px solid #004d20;
+        background-color: transparent;
+        padding: 5px 10px;
+        font-size: 16px;
+        color: #004d20;
+        margin-top: 40px;
+        outline: none;
+      }
+
+      .hidden {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .step-0,
+      .step-1,
+      .step-2,
+      .step-3,
+      .step-4,
+      .step-5,
+      .step-6,
+      .step-7,
+      .step-8,
+      .result-step {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+      }
+
+      .step-0,
+      .step-1,
+      .step-2,
+      .step-3,
+      .step-4,
+      .step-5,
+      .step-6,
+      .step-7,
+      .step-8 {
+        z-index: 4;
+      }
+      .result-step {
+        z-index: 1;
+      }
+      .step-1,
+      .step-2,
+      .step-3,
+      .step-4,
+      .step-5,
+      .step-6,
+      .step-7,
+      .step-8,
+      .result-step {
+        padding: 70px 25px 30px;
+      }
+
+      .step-number {
+        font-size: 140px;
+        position: absolute;
+        left: -80px;
+        top: -80px;
+        color: #119c4b2c;
+      }
+      .step-title {
+        font-size: 35px;
+        color: #119c4a;
+        font-weight: 800;
+        position: relative;
+      }
+      .step-subtitle {
+        color: #686868;
+        font-weight: 500;
+        font-size: 16px;
+        margin-top: 5px;
+      }
+
+      .scrollable-area {
+        height: calc(100vh - 200px);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .step-body {
+        flex-wrap: wrap;
+        margin-top: 50px;
+        /* border: 1px solid red; */
+        width: 100%;
+        height: fit-content;
+        max-height: 100% - 400px;
+        border-top: 1px solid #ffcb08;
+        padding: 30px 0;
+      }
+      .step-body-title {
+        width: 100%;
+        padding-left: 3px;
+        /* text-align: center; */
+        color: #119c4a;
+        font-weight: bold;
+      }
+      .step-body-content {
+        flex-wrap: wrap;
+        margin-bottom: -30px;
+      }
+
+      .step-card {
+        width: calc(50% - 10px);
+        max-width: 300px;
+        height: 180px;
+        border-radius: 5px;
+        /* border: 1px solid rgb(230, 230, 230); */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+        outline: 2px solid transparent;
+        transition: all 0.3s;
+        margin: 10px 5px;
+      }
+      .selected {
+        outline: 2px solid #119c4a;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        /* border-style: dashed; */
+      }
+      .img-area {
+        height: calc(180px - 40px);
+        background-color: white;
+        border-radius: 5px 5px 0 0;
+      }
+      .img-area img {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px 5px 0 0;
+        object-fit: cover;
+      }
+      .label-area {
+        width: 100%;
+        background-color: #119c4a;
+        height: 40px;
+        border-top: 1px solid rgb(214, 214, 214);
+        font-size: 14px;
+        font-weight: 500;
+        color: white;
+        letter-spacing: 1px;
+        border-radius: 0 0 5px 5px;
+      }
+
+      .result-step h2 {
+        color: #119c4a;
+        font-size: 28px;
+        padding-top: 20px;
+      }
+      .result-step ul {
+        list-style: none;
+        width: 100%;
+        height: fit-content;
+
+        display: flex;
+        padding: 0 15px;
+        margin-top: 40px;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+
+      .result-step ul li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+      .result-step ul li h3,
+      .result-step ul li p {
+        font-size: 16px;
+      }
+      .result-step ul li h3 {
+        margin-right: 8px;
+        color: rgb(48, 48, 48);
+      }
+      .result-step ul li p {
+        color: #004d20;
+      }
+      .result-step .buttons-area {
+        width: 100%;
+        position: relative;
+        height: fit-content;
+        position: absolute;
+        bottom: 7%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .result-step .buttons-area button {
+        position: relative;
+      }
+      .result-step .buttons-area .cancel-btn {
+        background-color: transparent !important;
+        box-shadow: none;
+        border: none;
+        width: 120px;
+        color: rgb(187, 38, 63);
+      }
+      .result-msg {
+        color: #119c4a;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="step-0 flex flex-center d-column p-absolute">
+        <img src="./images/logo-subway.png" />
+        <input class="main-input" placeholder="Informe seu Nome" />
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step1">
+          Começar &rarr;
+        </button>
+      </div>
+
+      <div class="step-1 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title">
+          <span class="step-number">1</span> Tamanho do Pão
+        </h2>
+        <h3 class="step-subtitle">Escolha seu produto</h3>
+
+        <div class="step-body flex j-spc-evly">
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step1/subway15.jpg" />
+            </div>
+            <div class="label-area flex flex-center">15cm</div>
+          </div>
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step1/subway30.png" />
+            </div>
+            <div class="label-area flex flex-center">30cm</div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step2 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-2 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title">
+          <span class="step-number">2</span> Tipo do Pão
+        </h2>
+        <h3 class="step-subtitle">Escolha seu pão</h3>
+
+        <div class="step-body flex j-spc-evly">
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step2/italiano-branco.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Italiano Branco</div>
+          </div>
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step2/integral.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Integral</div>
+          </div>
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step2/parmesao-oregano.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Parmesão e Orégano</div>
+          </div>
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step2/com-sementes.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Com Sementes</div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step3 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-3 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title"><span class="step-number">3</span> Recheio</h2>
+        <h3 class="step-subtitle">Qual seu recheio preferido?</h3>
+
+        <div class="scrollable-area">
+          <div class="flex step-body">
+            <p class="step-body-title">Exclusivos</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/bmt.jpg" />
+                </div>
+                <div class="label-area flex flex-center">B.M.T</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/teriyaki.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Frango Teriyaki</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/carne-queijo.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Carne</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/melt.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Subway Melt</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex step-body">
+            <p class="step-body-title">Tradicionais</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/club.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Subway Club</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/rosbife.png" />
+                </div>
+                <div class="label-area flex flex-center">Rosbife</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/atum.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Atum</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/frango-pizzaiolo.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Frango Pizzaiolo</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex step-body">
+            <p class="step-body-title">Preferidos</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/bmt.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Italiano</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/peito-peru.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Peito de Peru</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/peito-frango.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Peito de Frango</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex step-body">
+            <p class="step-body-title">Econômicos</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/almondegas.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Almôndegas</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/presunto.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Presunto</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/peito-peru.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Peito de Peru</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step3/vegano.jpg" />
+                </div>
+                <div class="label-area flex flex-center">Vegano</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step4 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-4 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title"><span class="step-number">4</span> Queijo</h2>
+        <h3 class="step-subtitle">Escolha seu Queijo</h3>
+
+        <div class="step-body flex j-spc-evly">
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step4/prato.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Queijo Prato</div>
+          </div>
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step4/cheddar.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Queijo Cheddar</div>
+          </div>
+          <div class="step-card">
+            <div class="img-area">
+              <img src="./images/step4/suiço.jpg" />
+            </div>
+            <div class="label-area flex flex-center">Queijo Suiço</div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step5 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-5 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title"><span class="step-number">5</span> Vegetais</h2>
+        <h3 class="step-subtitle">Escolha seus vegetais frescos</h3>
+
+        <div class="scrollable-area">
+          <div class="step-body flex j-spc-evly">
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/alface-americana.png" />
+              </div>
+              <div class="label-area flex flex-center">Alface americana</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/tomate.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Tomate</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/pepino.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Pepino</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/picles.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Picles</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/pimentao.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Pimentão</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/azeitona-preta.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Azeitonas Pretas</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/cecbola-roxa.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Cebola Roxa</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step5/rúcula.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Rúcula</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step6 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-6 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title"><span class="step-number">6</span> Molhos</h2>
+        <h3 class="step-subtitle">Escolha seus molhos e condimentos</h3>
+
+        <div class="scrollable-area">
+          <div class="flex step-body">
+            <p class="step-body-title">Molhos</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/mostarda.png" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Mostarda</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/maionese.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Maionese</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/parmesao.jpeg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Parmesão</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/mostardaEMel.png" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Mostarda e Mel</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/barbecue.jpeg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Barbecue</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex step-body">
+            <p class="step-body-title">Condimentos</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/sal.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Sal</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/azeite.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Azeite</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/vinagre.png" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Vinagre</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/oregano.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Orégano</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step6/pimenta-calabresa.png" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Pimenta calabresa</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step7 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-7 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title">
+          <span class="step-number">7</span> Acompanhamentos
+        </h2>
+        <h3 class="step-subtitle">
+          Para acompanhar, nada melhor: Chips & Cookies
+        </h3>
+
+        <div class="scrollable-area">
+          <div class="flex step-body">
+            <p class="step-body-title">Acompanhamentos</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step7/chips.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Chips</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step7/cookies.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">Cookies</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex step-body">
+            <p class="step-body-title">Kits</p>
+            <div class="step-body-content flex j-spc-evly">
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step7/chips&cookies.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">3 cookies</div>
+              </div>
+              <div class="step-card">
+                <div class="img-area">
+                  <img src="./images/step7/chips&cookies.jpg" />
+                  <!-- imagem do elemento aqui-->
+                </div>
+                <div class="label-area flex flex-center">12 cookies</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step8 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="step-8 flex a-center d-column p-absolute hidden">
+        <h2 class="step-title"><span class="step-number">8</span> Bebidas</h2>
+        <h3 class="step-subtitle">Escolha sua bebida</h3>
+
+        <div class="scrollable-area">
+          <div class="step-body flex j-spc-evly">
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step8/agua.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Água</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step8/cha.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Chá em lata</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step8/schweppes.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Schweppes</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step8/tonica.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Tônica</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step8/refrigerantes.png" />
+              </div>
+              <div class="label-area flex flex-center">Refrigerante</div>
+            </div>
+            <div class="step-card">
+              <div class="img-area">
+                <img src="./images/step8/sucos.jpg" />
+              </div>
+              <div class="label-area flex flex-center">Suco em lata</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="main-btn flex a-center j-spc-evly js-go-to-step9 hidden">
+          Próximo &rarr;
+        </button>
+      </div>
+
+      <div class="result-step flex a-center d-column p-absolute hidden">
+        <h2>Confirmar pedido?</h2>
+        <ul class="js-result-data">
+          <!-- <li>
+            <h3>Salada:</h3>
+            <p>Pera, uva, maçã, salada mista</p>
+          </li>
+          <li>
+            <h3>Salada:</h3>
+            <p>Pera, uva, maçã, salada mista</p>
+          </li> -->
+        </ul>
+        <p class="result-msg"></p>
+        <div class="buttons-area">
+          <button class="main-btn cancel-btn">Cancelar</button>
+          <button class="main-btn confirm-btn">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    let data = [];
+    let name = "";
+
+    const handleResult = (allSelected) => {
+      const resultStepContainer = document.querySelector(".result-step");
+      resultStepContainer.classList.remove("hidden");
+      const step0 = document.querySelector(".step-0");
+      const step8 = document.querySelector(".step-8");
+      step8.classList.add("hidden");
+
+      const resultData = document.querySelector(".js-result-data");
+
+      const auxStep = [];
+      allSelected.forEach((selected, idx) => {
+        if (!auxStep.includes(selected.step)) {
+          const hasMore = allSelected.filter(
+            (sel) => sel.topic === selected.topic
+          );
+
+          let el = "";
+          if (hasMore.length > 1) {
+            let result = "";
+            hasMore.forEach((moreEl, index) => {
+              auxStep.push(moreEl.step);
+              if (index === hasMore.length - 1) {
+                result += `${moreEl.selectedName}.`;
+              } else {
+                result += `${moreEl.selectedName}, `;
+              }
+            });
+            el = `
+            <li>
+              <h3>${selected.step}. ${selected.topic} </h3>  
+              <p> ${result}</p>
+            </li>
+          `;
+          } else {
+            el = `
+            <li>
+              <h3> ${selected.step}. ${selected.topic} </h3>  
+              <p> ${selected.selectedName}</p>
+            </li>
+          `;
+          }
+
+          resultData.insertAdjacentHTML("beforeend", el);
+        }
+      });
+      console.log(auxStep);
+
+      // index,
+      //             step,
+      //             selectedName,
+
+      const cancelBtn = document.querySelector(".main-btn.cancel-btn");
+      if (cancelBtn)
+        cancelBtn.addEventListener("click", () => {
+          step0.classList.remove("hidden");
+          resultStepContainer.classList.add("hidden");
+        });
+      const confirmBtn = document.querySelector(".main-btn.confirm-btn");
+      if (confirmBtn)
+        confirmBtn.addEventListener("click", () => {
+          const resultMsg = document.querySelector(".result-msg");
+          resultMsg.innerHTML = `${nome}, o seu pedido foi recebido!`;
+        });
+    };
+
+    const handleStepCard = (step, isOneOption, hasNext = true) => {
+      const stepContent = document.querySelector(`.step-${step}`);
+      if (stepContent) {
+        const cards = stepContent.querySelectorAll(".step-card");
+        const nextBtn = stepContent.querySelector(".main-btn");
+        let hasSelected = false;
+
+        const removeSelect = (unlessIndx) => {
+          cards.forEach((card, idx) => {
+            if (unlessIndx !== idx) card.classList.remove("selected");
+          });
+        };
+        const checkSelect = () => {
+          hasSelected = false;
+          cards.forEach((card, index) => {
+            const selectedName = card.querySelector(".label-area").innerHTML;
+            if (card.classList.contains("selected")) {
+              hasSelected = true;
+            } else {
+              // const aux = [];
+              // console.log(data);
+              // data.forEach((element) => {
+              //   if (
+              //     element.step !== step &&
+              //     element.selectedName !== selectedName &&
+              //     element.index !== index
+              //   ) {
+              //     aux.push(element);
+              //   }
+              // });
+              // data = aux;
+            }
+          });
+        };
+        cards.forEach((card, idx) => {
+          card.addEventListener("click", (evt) => {
+            card.classList.add("selected");
+            // if (card.classList.contains("selected")) {
+            //   card.classList.remove("selected");
+            // } else {
+            // }
+
+            if (isOneOption) removeSelect(idx);
+
+            checkSelect();
+            if (hasSelected && hasNext) nextBtn.classList.remove("hidden");
+          });
+        });
+
+        if (hasNext) {
+          nextBtn.addEventListener("click", () => {
+            const nextStep = document.querySelector(`.step-${step + 1}`);
+            if (stepContent) stepContent.classList.add("hidden");
+            if (nextStep) nextStep.classList.remove("hidden");
+
+            let setIsOneOption = false;
+            let setHasNext = true;
+            let topic = "";
+            switch (step + 1) {
+              case 1:
+              case 2:
+              case 3:
+              case 4:
+                setIsOneOption = true;
+                break;
+              case 5:
+              case 6:
+              case 7:
+              case 8:
+                setIsOneOption = false;
+                break;
+              case 9:
+                setHasNext = false;
+              default:
+                break;
+            }
+
+            // set topic
+            switch (step) {
+              case 1:
+                topic = "Tamanho do Pão";
+                break;
+              case 2:
+                topic = "Tipo do Pão";
+                break;
+              case 3:
+                topic = "Recheio";
+                break;
+              case 4:
+                topic = "Queijo";
+                break;
+              case 5:
+                topic = "Vegetais";
+                break;
+              case 6:
+                topic = "Molhos e Condimentos";
+                break;
+              case 7:
+                topic = "Acompanhamentos";
+                break;
+              case 8:
+                topic = "Bebidas";
+                break;
+              default:
+                break;
+            }
+
+            cards.forEach((card, index) => {
+              const selectedName = card.querySelector(".label-area").innerHTML;
+              if (card.classList.contains("selected")) {
+                data.push({
+                  index,
+                  step,
+                  selectedName,
+                  topic,
+                });
+              }
+            });
+
+            if (setHasNext)
+              handleStepCard(step + 1, setIsOneOption, setHasNext);
+            console.log(setHasNext);
+            console.log(step);
+            if (!setHasNext && step + 1 === 9) handleResult(data);
+          });
+        }
+      }
+    };
+
+    const startBtn = document.querySelector(".js-go-to-step1");
+    startBtn.addEventListener("click", () => {
+      const step0 = document.querySelector(".step-0");
+      const step1 = document.querySelector(".step-1");
+      if (step0) step0.classList.add("hidden");
+      if (step1) step1.classList.remove("hidden");
+
+      const nameInput = document.querySelector(".main-input");
+      if (nameInput) {
+        const nameValue = nameInput.value;
+        name = nameValue;
+      }
+
+      handleStepCard(1, true, true);
+    });
+  </script>
+</html>
