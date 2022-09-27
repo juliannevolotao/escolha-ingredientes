@@ -863,12 +863,13 @@
         cancelBtn.addEventListener("click", () => {
           step0.classList.remove("hidden");
           resultStepContainer.classList.add("hidden");
+          document.location.reload();
         });
       const confirmBtn = document.querySelector(".main-btn.confirm-btn");
       if (confirmBtn)
         confirmBtn.addEventListener("click", () => {
           const resultMsg = document.querySelector(".result-msg");
-          resultMsg.innerHTML = `${nome}, o seu pedido foi recebido!`;
+          resultMsg.innerHTML = `${name}, o seu pedido foi recebido!`;
         });
     };
 
